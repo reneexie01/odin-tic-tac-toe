@@ -1,30 +1,28 @@
-function createPlayer(name, marker) {
-    return { name, marker };
+// gameboard module
+
+const gameboard = (function Gameboard() {
+    const gameboard = [];
+
+    const renderGameboard = () => gameboard;
+
+    return { renderGameboard };
+})();
+
+// person factory function
+
+function createPerson(name, mark) {
+    return { name, mark };
 }
 
-const player1 = createPlayer("player1", "X");
-const player2 = createPlayer("player2", "O");
+// displayController module
 
-let playCount = 0;
+const displayController = (function displayController() {
+    const player1 = createPerson("Jack", "X");
+    const player2 = createPerson("Jill", "O");
 
-/* Render gameboard */
-function displayGame() {
-    const board = document.querySelector(".board");
-    board.addEventListener("click", playGame);
-}
 
-displayGame();
+    return { player1, player2 };
+})()
 
-/* Game logic */
-function playGame(e) {
-    if ((playCount === 0 || playCount % 2 === 0) && e.target.innerText === "") {
-        e.target.innerText = player1.marker;
-        playCount++;
-    } else if (playCount % 2 !== 0 && e.target.innerText === "") {
-        e.target.innerText = player2.marker;
-        playCount++;
-    } else {
-        return;
-    }
-    console.log(playCount);
-} 
+console.log(gameboard.renderGameboard());
+console.log(displayController.player1);
