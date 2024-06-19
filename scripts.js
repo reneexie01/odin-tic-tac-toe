@@ -4,9 +4,18 @@ const domGameboard = (function DomGameboard() {
 
     const cellList = document.querySelectorAll(".cell");
 
-    // function to get cell based on index 
-    // change cell innerText into player marker
+// set up event listeners to get index
+// push that index into the playGame function
 
+    const clickDom = function() {
+        cellList.forEach((cell) => {
+            cell.addEventListener("click", (e) => {
+                let index = e.target.id;
+                displayController.playGame(index)
+            })
+        })
+    }
+    
     const updateDom = function(index, mark) {
         if (cellList[index].innerText === "") {
             cellList[index].innerText = mark;
@@ -17,7 +26,7 @@ const domGameboard = (function DomGameboard() {
         cellList.forEach((cell) => cell.innerText = "");
     }
 
-    return { updateDom, resetDom };
+    return { clickDom, updateDom, resetDom };
 
 })();
 
@@ -68,7 +77,7 @@ const displayController = (function displayController() {
     const addPlayCount = () => playCount++;
 
     const playGame = function(index) {
-
+        index = parseInt(index);
         if (checkForWin()) {
             return;
         } else {
@@ -122,6 +131,10 @@ const displayController = (function displayController() {
     return { playGame, addPlayCount, resetGame };
 })()
 
+domGameboard.clickDom();
+
+
+/*
 displayController.playGame(0); // x
 displayController.playGame(0); // o invalid
 displayController.playGame(1); // o
@@ -132,9 +145,8 @@ displayController.playGame(8); // x should've ended the game
 displayController.playGame(2);
 displayController.playGame(3);
 
-
 displayController.resetGame();
-/*
+
 displayController.playGame(0); // x
 displayController.playGame(1);
 displayController.playGame(3);
