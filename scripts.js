@@ -1,3 +1,23 @@
+// DOM module
+
+const domGameboard = (function DomGameboard() {
+
+    const cellElements = document.querySelectorAll(".cell");
+    const cellList = Array.from(cellElements)
+
+    // function to get cell based on index 
+    // change cell innerText into player marker
+
+    const updateDom = function(index, mark) {
+        if (cellList[index].innerText === "") {
+            cellList[index].innerText = mark;
+        }
+    }
+
+    return { updateDom };
+
+})();
+
 // gameboard module
 
 const gameboard = (function Gameboard() {
@@ -55,29 +75,28 @@ const displayController = (function displayController() {
     
             if (playCount === 0 || playCount % 2 === 0) {
                 gameboard.addMark(index, player1.mark);
-                if (checkForWin()) {
-                    console.log(`Win detected`)
-                    return;
-                } else if (playCount === 9) {
-                    console.log(`Tie`)
-                    return;
-                }
+                domGameboard.updateDom(index, player1.mark);
+                winCheckAfterPlay();
             } else if (playCount % 2 !== 0) {
                 gameboard.addMark(index, player2.mark);
-                if (checkForWin()) {
-                    console.log(`Win detected`)
-                    return;
-                } else if (playCount === 9) {
-                    console.log(`Tie`)
-                    return;
-                }
+                domGameboard.updateDom(index, player2.mark);
+                winCheckAfterPlay();
             }
+            console.log(gameboard.renderGameboard());
+            console.log(playCount)
         }
-    
-        console.log(gameboard.renderGameboard());
-        console.log(playCount)
 
     };
+
+    function winCheckAfterPlay() {
+        if (checkForWin()) {
+            console.log(`Win detected`)
+            return;
+        } else if (playCount === 9) {
+            console.log(`Tie`)
+            return;
+        }
+    }
 
     function checkForWin() {
         const board = gameboard.renderGameboard();
@@ -93,6 +112,7 @@ const displayController = (function displayController() {
     const resetGame = function() {
         gameboard.resetBoard();
         playCount = 0;
+        console.log(`Game reset`)
     }
 
     return { playGame, addPlayCount, resetGame };
@@ -108,6 +128,7 @@ displayController.playGame(8); // x should've ended the game
 displayController.playGame(2);
 displayController.playGame(3);
 
+/*
 displayController.resetGame();
 displayController.playGame(0); // x
 displayController.playGame(1);
@@ -115,3 +136,5 @@ displayController.playGame(3);
 displayController.playGame(2);
 displayController.playGame(6); // win
 displayController.playGame(8); 
+displayController.playGame(5); 
+*/
