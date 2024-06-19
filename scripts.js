@@ -8,7 +8,7 @@ const gameboard = (function Gameboard() {
     const addMark = function(index, mark) {
         if (board[index] === "") {
             board[index] = mark;
-            playCount++;
+            displayController.addPlayCount();
         } else {
             return;
         }
@@ -23,11 +23,10 @@ function createPerson(name, mark) {
     return { name, mark };
 }
 
-let playCount = 0 // must address this global variable
-
 // displayController module
 
 const displayController = (function displayController() {
+    let playCount = 0 
     const player1 = createPerson("Jack", "X");
     const player2 = createPerson("Jill", "O");
     const winConditions = [
@@ -41,28 +40,30 @@ const displayController = (function displayController() {
         [1, 4, 6]
     ];
     
+    const addPlayCount = () => playCount++;
+
     const playGame = function(index) {
-
-        if (gameboard.renderGameboard()[index] !== "") {
-            console.log(`Invalid move. Try again.`);
-        }
-
-        if (playCount === 0 || playCount % 2 === 0) {
-            gameboard.addMark(index, player1.mark);
-        } else if (playCount % 2 !== 0) {
-            gameboard.addMark(index, player2.mark);
-        }
-        
-        console.log(gameboard.renderGameboard());
-        console.log(playCount)
-        
         if (checkForWin()){
             console.log(`Win detected`)
+            return;
         } else if (playCount === 9) {
             console.log(`Tie`)
+            return;
         } else {
-            console.log(`Keep playing`)
+            if (gameboard.renderGameboard()[index] !== "") {
+                console.log(`Invalid move. Try again.`);
+            }
+    
+            if (playCount === 0 || playCount % 2 === 0) {
+                gameboard.addMark(index, player1.mark);
+            } else if (playCount % 2 !== 0) {
+                gameboard.addMark(index, player2.mark);
+            }    
         }
+    
+        console.log(gameboard.renderGameboard());
+        console.log(playCount)
+
     };
 
     function checkForWin() {
@@ -76,7 +77,7 @@ const displayController = (function displayController() {
         return false;
     }
 
-    return { playGame };
+    return { playGame, addPlayCount };
 })()
 
 displayController.playGame(0); // x
