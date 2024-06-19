@@ -1,7 +1,7 @@
 // gameboard module
 
 const gameboard = (function Gameboard() {
-    const board = ["","","","","","","","",""];
+    let board = ["","","","","","","","",""];
 
     const renderGameboard = () => board;
 
@@ -14,7 +14,9 @@ const gameboard = (function Gameboard() {
         }
     }
 
-    return { renderGameboard, addMark };
+    const resetBoard = () => board = ["","","","","","","","",""];
+
+    return { renderGameboard, addMark, resetBoard };
 })();
 
 // person factory function
@@ -43,11 +45,8 @@ const displayController = (function displayController() {
     const addPlayCount = () => playCount++;
 
     const playGame = function(index) {
-        if (checkForWin()){
-            console.log(`Win detected`)
-            return;
-        } else if (playCount === 9) {
-            console.log(`Tie`)
+
+        if (checkForWin()) {
             return;
         } else {
             if (gameboard.renderGameboard()[index] !== "") {
@@ -56,9 +55,23 @@ const displayController = (function displayController() {
     
             if (playCount === 0 || playCount % 2 === 0) {
                 gameboard.addMark(index, player1.mark);
+                if (checkForWin()) {
+                    console.log(`Win detected`)
+                    return;
+                } else if (playCount === 9) {
+                    console.log(`Tie`)
+                    return;
+                }
             } else if (playCount % 2 !== 0) {
                 gameboard.addMark(index, player2.mark);
-            }    
+                if (checkForWin()) {
+                    console.log(`Win detected`)
+                    return;
+                } else if (playCount === 9) {
+                    console.log(`Tie`)
+                    return;
+                }
+            }
         }
     
         console.log(gameboard.renderGameboard());
@@ -77,7 +90,12 @@ const displayController = (function displayController() {
         return false;
     }
 
-    return { playGame, addPlayCount };
+    const resetGame = function() {
+        gameboard.resetBoard();
+        playCount = 0;
+    }
+
+    return { playGame, addPlayCount, resetGame };
 })()
 
 displayController.playGame(0); // x
@@ -87,4 +105,13 @@ displayController.playGame(0); // x invalid
 displayController.playGame(4); // x
 displayController.playGame(5); // o
 displayController.playGame(8); // x should've ended the game
-displayController.playGame(2); // o
+displayController.playGame(2);
+displayController.playGame(3);
+
+displayController.resetGame();
+displayController.playGame(0); // x
+displayController.playGame(1);
+displayController.playGame(3);
+displayController.playGame(2);
+displayController.playGame(6); // win
+displayController.playGame(8); 
