@@ -2,8 +2,7 @@
 
 const domGameboard = (function DomGameboard() {
 
-    const cellElements = document.querySelectorAll(".cell");
-    const cellList = Array.from(cellElements)
+    const cellList = document.querySelectorAll(".cell");
 
     // function to get cell based on index 
     // change cell innerText into player marker
@@ -14,7 +13,11 @@ const domGameboard = (function DomGameboard() {
         }
     }
 
-    return { updateDom };
+    const resetDom = function() {
+        cellList.forEach((cell) => cell.innerText = "");
+    }
+
+    return { updateDom, resetDom };
 
 })();
 
@@ -112,6 +115,7 @@ const displayController = (function displayController() {
     const resetGame = function() {
         gameboard.resetBoard();
         playCount = 0;
+        domGameboard.resetDom();
         console.log(`Game reset`)
     }
 
@@ -128,8 +132,9 @@ displayController.playGame(8); // x should've ended the game
 displayController.playGame(2);
 displayController.playGame(3);
 
-/*
+
 displayController.resetGame();
+/*
 displayController.playGame(0); // x
 displayController.playGame(1);
 displayController.playGame(3);
