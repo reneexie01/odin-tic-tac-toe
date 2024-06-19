@@ -10,7 +10,6 @@ const gameboard = (function Gameboard() {
             board[index] = mark;
             playCount++;
         } else {
-            console.log(`Invalid move. Try again.`)
             return;
         }
     }
@@ -38,36 +37,53 @@ const displayController = (function displayController() {
         [0, 3, 6],
         [2, 5, 8],
         [0, 4, 8],
-        [2, 4, 6]
+        [2, 4, 6],
+        [1, 4, 6]
     ];
+    
     const playGame = function(index) {
+
+        if (gameboard.renderGameboard()[index] !== "") {
+            console.log(`Invalid move. Try again.`);
+        }
+
         if (playCount === 0 || playCount % 2 === 0) {
             gameboard.addMark(index, player1.mark);
-            console.log(gameboard.renderGameboard());
         } else if (playCount % 2 !== 0) {
             gameboard.addMark(index, player2.mark);
-            console.log(gameboard.renderGameboard());
         }
-        console.log(checkForWin());
-    }
+        
+        console.log(gameboard.renderGameboard());
+        console.log(playCount)
+        
+        if (checkForWin()){
+            console.log(`Win detected`)
+        } else if (playCount === 9) {
+            console.log(`Tie`)
+        } else {
+            console.log(`Keep playing`)
+        }
+    };
 
     function checkForWin() {
+        const board = gameboard.renderGameboard();
         for (let i = 0; i < winConditions.length; i++) {
             const [a, b, c] = winConditions[i];
-            board = gameboard.renderGameboard;
-            if (board[a] === board[b] === board[c] && board[a] !== "") {
+            if (board[a] !== "" && board[a] === board[b] && board[a] === board[c]) {
                 return true;
-            } else {
-                return false;
             }
         }
+        return false;
     }
 
-    return { player1, player2, playGame };
+    return { playGame };
 })()
 
-console.log(displayController.playGame(0)); // x
-console.log(displayController.playGame(0)); // o invalid
-console.log(displayController.playGame(1)); // o
-console.log(displayController.playGame(0)); // x invalid
-console.log(displayController.playGame(4)); // x
+displayController.playGame(0); // x
+displayController.playGame(0); // o invalid
+displayController.playGame(1); // o
+displayController.playGame(0); // x invalid
+displayController.playGame(4); // x
+displayController.playGame(5); // o
+displayController.playGame(8); // x should've ended the game
+displayController.playGame(2); // o
