@@ -4,14 +4,13 @@ const domGameboard = (function DomGameboard() {
 
     const cellList = document.querySelectorAll(".cell");
 
-// set up event listeners to get index
-// push that index into the playGame function
-
     const clickDom = function() {
+        
         cellList.forEach((cell) => {
             cell.addEventListener("click", (e) => {
                 let index = e.target.id;
-                displayController.playGame(index)
+                displayController.playGame(index);
+                updatePlayCount()
             })
         })
     }
@@ -26,7 +25,53 @@ const domGameboard = (function DomGameboard() {
         cellList.forEach((cell) => cell.innerText = "");
     }
 
-    return { clickDom, updateDom, resetDom };
+    const playerNameSubmissions = function() {
+        const submitButton = document.querySelector(".submit");
+
+        submitButton.addEventListener("click", () => {
+            event.preventDefault();
+
+            const player1Name = document.querySelector("#player1").value;
+            const player2Name = document.querySelector("#player2").value;
+
+            if (player1Name === "" || player2Name === "") {
+                console.log(`Please add a name for both player1 and player2`)
+            } else {
+                displayController.setPlayerNames(player1Name, player2Name);
+                displayController.getGameStatus = true;
+                playerNameAnnouncements(player1Name, player2Name);
+            }
+        })
+    }
+
+    function updatePlayCount() {
+        const playCountAnnouncementPara = document.querySelector(".play-count");
+        playCountAnnouncementPara.innerText = `Play Count: ${displayController.getPlayCount()}`
+
+    }
+
+    function playerNameAnnouncements(name1, name2) {
+        const gameAnnouncements = document.querySelector(".game-announcements");
+        gameAnnouncements.innerText = "";
+
+        const playerAnnouncementPara = document.createElement("p");
+        playerAnnouncementPara.classList.add("player-announcement")
+        const playerInputs = document.createTextNode(`Current Game: ${name1} VS ${name2}`);
+        playerAnnouncementPara.appendChild(playerInputs);
+        gameAnnouncements.appendChild(playerAnnouncementPara);
+        playerCountAnnouncement();
+    }
+
+    function playerCountAnnouncement() {
+        const playerAnnouncementPara = document.querySelector(".player-announcement");
+        const playCountAnnouncementPara = document.createElement("p");
+        playCountAnnouncementPara.classList.add("play-count")
+        const playCount = document.createTextNode(`Play Count: 0`);
+        playCountAnnouncementPara.appendChild(playCount);
+        playerAnnouncementPara.appendChild(playCountAnnouncementPara);
+    }
+
+    return { clickDom, updateDom, resetDom, playerNameSubmissions };
 
 })();
 
@@ -61,8 +106,15 @@ function createPerson(name, mark) {
 
 const displayController = (function displayController() {
     let playCount = 0 
-    const player1 = createPerson("Jack", "X");
-    const player2 = createPerson("Jill", "O");
+    let player1 = createPerson("Player 1", "X");
+    let player2 = createPerson("Player 2", "O");
+    let gameStatus = false;
+
+    const setPlayerNames = function(name1, name2) {
+        player1.name = name1;
+        player2.name = name2;
+    }
+
     const winConditions = [
         [0, 1, 2],
         [3, 4, 5],
@@ -75,6 +127,10 @@ const displayController = (function displayController() {
     ];
     
     const addPlayCount = () => playCount++;
+
+    const getPlayCount = () => playCount;
+        
+    const getGameStatus = () => gameStatus;
 
     const playGame = function(index) {
         index = parseInt(index);
@@ -95,7 +151,7 @@ const displayController = (function displayController() {
                 winCheckAfterPlay();
             }
             console.log(gameboard.renderGameboard());
-            console.log(playCount)
+            // console.log(playCount)
         }
 
     };
@@ -128,10 +184,11 @@ const displayController = (function displayController() {
         console.log(`Game reset`)
     }
 
-    return { playGame, addPlayCount, resetGame };
+    return { setPlayerNames, playGame, addPlayCount, getPlayCount, resetGame, getGameStatus };
 })()
 
 domGameboard.clickDom();
+domGameboard.playerNameSubmissions();
 
 
 /*
