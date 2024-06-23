@@ -12,6 +12,7 @@ const domGameboard = (function DomGameboard() {
                 displayController.playGame(index);
                 updatePlayCount();
                 playerTurnAnnouncement();
+                winningBoardAnnouncement()
             })
         })
     }
@@ -94,6 +95,23 @@ const domGameboard = (function DomGameboard() {
         }
     }
 
+    function winningBoardAnnouncement() {
+        const playerTurnPara = document.querySelector(".player-turn");
+        const playCountAnnouncementPara = document.querySelector(".play-count");
+
+        if (displayController.winningBoardStatus() === true) {
+            playerTurnPara.remove();
+            const winningAnnouncementPara = document.createElement("p");
+            winningAnnouncementPara.classList.add("winning-announcement");
+
+            const winningAnnouncement = document.createTextNode(`Winner detected`);
+            winningAnnouncementPara.appendChild(winningAnnouncement);
+            playCountAnnouncementPara.appendChild(winningAnnouncementPara);
+        } else {
+            return;
+        }
+    }
+
     return { clickDom, updateDom, resetDom, playerNameSubmissions };
 
 })();
@@ -131,7 +149,7 @@ const displayController = (function displayController() {
     let playCount = 0 
     let player1 = createPerson("Player 1", "X");
     let player2 = createPerson("Player 2", "O");
-    let gameStatus = false;
+    let winningBoard = false;
 
     const setPlayerNames = function(name1, name2) {
         player1.name = name1;
@@ -152,8 +170,6 @@ const displayController = (function displayController() {
     const addPlayCount = () => playCount++;
 
     const getPlayCount = () => playCount;
-        
-    const getGameStatus = () => gameStatus;
 
     const playGame = function(index) {
         index = parseInt(index);
@@ -173,19 +189,21 @@ const displayController = (function displayController() {
                 domGameboard.updateDom(index, player2.mark);
                 winCheckAfterPlay();
             }
-            console.log(gameboard.renderGameboard());
+            // console.log(gameboard.renderGameboard());
             // console.log(playCount)
         }
 
     };
 
+    const winningBoardStatus = () => winningBoard;
+
     function winCheckAfterPlay() {
         if (checkForWin()) {
             console.log(`Win detected`)
-            return;
+            winningBoard = true;
         } else if (playCount === 9) {
             console.log(`Tie`)
-            return;
+            winningBoard = false;
         }
     }
 
@@ -207,7 +225,7 @@ const displayController = (function displayController() {
         console.log(`Game reset`)
     }
 
-    return { setPlayerNames, playGame, addPlayCount, getPlayCount, resetGame, getGameStatus };
+    return { setPlayerNames, playGame, addPlayCount, getPlayCount, resetGame, winningBoardStatus };
 })()
 
 domGameboard.clickDom();
