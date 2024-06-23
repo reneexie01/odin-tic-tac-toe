@@ -10,7 +10,8 @@ const domGameboard = (function DomGameboard() {
             cell.addEventListener("click", (e) => {
                 let index = e.target.id;
                 displayController.playGame(index);
-                updatePlayCount()
+                updatePlayCount();
+                playerTurnAnnouncement();
             })
         })
     }
@@ -60,15 +61,37 @@ const domGameboard = (function DomGameboard() {
         playerAnnouncementPara.appendChild(playerInputs);
         gameAnnouncements.appendChild(playerAnnouncementPara);
         playerCountAnnouncement();
+        playerTurnAnnouncement();
     }
 
     function playerCountAnnouncement() {
         const playerAnnouncementPara = document.querySelector(".player-announcement");
+
         const playCountAnnouncementPara = document.createElement("p");
-        playCountAnnouncementPara.classList.add("play-count")
+        playCountAnnouncementPara.classList.add("play-count");
+        
         const playCount = document.createTextNode(`Play Count: 0`);
         playCountAnnouncementPara.appendChild(playCount);
         playerAnnouncementPara.appendChild(playCountAnnouncementPara);
+    }
+
+    function playerTurnAnnouncement() {
+        const playCountAnnouncementPara = document.querySelector(".play-count");
+        
+        const playerTurnPara = document.createElement("p");
+        playerTurnPara.classList.add("player-turn");
+
+        let currentPlayCount = displayController.getPlayCount();
+
+        if (currentPlayCount === 0 || currentPlayCount % 2 === 0) {
+            const player1Turn = document.createTextNode(`Player 1's turn.`)
+            playerTurnPara.appendChild(player1Turn);
+            playCountAnnouncementPara.appendChild(playerTurnPara);
+        } else if (currentPlayCount % 2 !== 0) {
+            const player2Turn = document.createTextNode(`Player 2's turn.`)
+            playerTurnPara.appendChild(player2Turn);
+            playCountAnnouncementPara.appendChild(playerTurnPara);
+        }
     }
 
     return { clickDom, updateDom, resetDom, playerNameSubmissions };
