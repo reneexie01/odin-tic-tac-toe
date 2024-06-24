@@ -5,16 +5,18 @@ const domGameboard = (function DomGameboard() {
     const cellList = document.querySelectorAll(".cell");
 
     const clickDom = function() {
-        
-        cellList.forEach((cell) => {
-            cell.addEventListener("click", (e) => {
-                let index = e.target.id;
-                displayController.playGame(index);
-                updatePlayCount();
-                playerTurnAnnouncement();
-                winningBoardAnnouncement()
+            cellList.forEach((cell) => {
+                cell.addEventListener("click", (e) => {
+                    if (displayController.getGameStatus()) {
+                        let index = e.target.id;
+                        displayController.playGame(index);
+                        updatePlayCount();
+                        playerTurnAnnouncement();
+                        winningBoardAnnouncement();
+                    }
+                })
             })
-        })
+        
     }
     
     const updateDom = function(index, mark) {
@@ -40,7 +42,6 @@ const domGameboard = (function DomGameboard() {
                 console.log(`Please add a name for both player1 and player2`)
             } else {
                 displayController.setPlayerNames(player1Name, player2Name);
-                displayController.getGameStatus = true;
                 playerNameAnnouncements(player1Name, player2Name);
             }
         })
@@ -150,10 +151,21 @@ const displayController = (function displayController() {
     let player1 = createPerson("Player 1", "X");
     let player2 = createPerson("Player 2", "O");
     let winningBoard = false;
+    let gameActive = false;
+
+    function updateGameStatus() {
+        if (player1.name != "" && player2.name != "") {
+            gameActive = true;
+        } else {
+            gameActive = false;
+        }
+    }
+    const getGameStatus = () => gameActive;
 
     const setPlayerNames = function(name1, name2) {
         player1.name = name1;
         player2.name = name2;
+        updateGameStatus();
     }
 
     const winConditions = [
@@ -225,7 +237,7 @@ const displayController = (function displayController() {
         console.log(`Game reset`)
     }
 
-    return { setPlayerNames, playGame, addPlayCount, getPlayCount, resetGame, winningBoardStatus };
+    return { setPlayerNames, playGame, addPlayCount, getPlayCount, resetGame, winningBoardStatus, getGameStatus };
 })()
 
 domGameboard.clickDom();
