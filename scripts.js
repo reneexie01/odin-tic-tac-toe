@@ -39,6 +39,14 @@ const domGameboard = (function DomGameboard() {
             const player2Name = document.querySelector("#player2").value;
 
             if (player1Name === "" || player2Name === "") {
+                const gameAnnouncements = document.querySelector(".game-announcements");
+                gameAnnouncements.innerText = "";
+
+                const nameRequirementPara = document.createElement("p");
+                nameRequirementPara.classList.add("name-required");
+                const nameRequired = document.createTextNode(`Please add a name for both player 1 and player 2`);
+                nameRequirementPara.appendChild(nameRequired);
+                gameAnnouncements.appendChild(nameRequirementPara);
                 console.log(`Please add a name for both player1 and player2`)
             } else {
                 displayController.setPlayerNames(player1Name, player2Name);
