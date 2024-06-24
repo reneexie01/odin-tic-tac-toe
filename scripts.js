@@ -11,8 +11,8 @@ const domGameboard = (function DomGameboard() {
                         let index = e.target.id;
                         displayController.playGame(index);
                         updatePlayCount();
-                        playerTurnAnnouncement();
-                        winningBoardAnnouncement();
+                        playerTurnAnnouncement(displayController.getPlayer1().name, displayController.getPlayer2().name);
+                        winningBoardAnnouncement(displayController.getPlayer1().name, displayController.getPlayer2().name);
                     }
                 })
             })
@@ -77,7 +77,7 @@ const domGameboard = (function DomGameboard() {
         playerAnnouncementPara.appendChild(playCountAnnouncementPara);
     }
 
-    function playerTurnAnnouncement() {
+    function playerTurnAnnouncement(name1, name2) {
         const playCountAnnouncementPara = document.querySelector(".play-count");
         
         const playerTurnPara = document.createElement("p");
@@ -86,17 +86,17 @@ const domGameboard = (function DomGameboard() {
         let currentPlayCount = displayController.getPlayCount();
 
         if (currentPlayCount === 0 || currentPlayCount % 2 === 0) {
-            const player1Turn = document.createTextNode(`Player 1's turn.`)
+            const player1Turn = document.createTextNode(`${name1}'s turn.`)
             playerTurnPara.appendChild(player1Turn);
             playCountAnnouncementPara.appendChild(playerTurnPara);
         } else if (currentPlayCount % 2 !== 0) {
-            const player2Turn = document.createTextNode(`Player 2's turn.`)
+            const player2Turn = document.createTextNode(`${name2}'s turn.`)
             playerTurnPara.appendChild(player2Turn);
             playCountAnnouncementPara.appendChild(playerTurnPara);
         }
     }
 
-    function winningBoardAnnouncement() {
+    function winningBoardAnnouncement(name1, name2) {
         const playerTurnPara = document.querySelector(".player-turn");
         const playCountAnnouncementPara = document.querySelector(".play-count");
 
@@ -104,10 +104,15 @@ const domGameboard = (function DomGameboard() {
             playerTurnPara.remove();
             const winningAnnouncementPara = document.createElement("p");
             winningAnnouncementPara.classList.add("winning-announcement");
-
-            const winningAnnouncement = document.createTextNode(`Winner detected`);
-            winningAnnouncementPara.appendChild(winningAnnouncement);
-            playCountAnnouncementPara.appendChild(winningAnnouncementPara);
+            if (displayController.getPlayCount() === 0 || displayController.getPlayCount() % 2 === 0) {
+                const winningAnnouncement = document.createTextNode(`${name1} wins`);
+                winningAnnouncementPara.appendChild(winningAnnouncement);
+                playCountAnnouncementPara.appendChild(winningAnnouncementPara);
+            } else if (displayController.getPlayCount() % 2 != 0) {
+                const winningAnnouncement = document.createTextNode(`${name2} wins`);
+                winningAnnouncementPara.appendChild(winningAnnouncement);
+                playCountAnnouncementPara.appendChild(winningAnnouncementPara);
+            }
         } else {
             return;
         }
@@ -159,7 +164,14 @@ const displayController = (function displayController() {
         } else {
             gameActive = false;
         }
+        console.log(player1.name)
+        console.log(player2.name)
     }
+
+    const getPlayer1 = () => player1;
+
+    const getPlayer2 = () => player2;
+
     const getGameStatus = () => gameActive;
 
     const setPlayerNames = function(name1, name2) {
@@ -196,7 +208,7 @@ const displayController = (function displayController() {
                 gameboard.addMark(index, player1.mark);
                 domGameboard.updateDom(index, player1.mark);
                 winCheckAfterPlay();
-            } else if (playCount % 2 !== 0) {
+            } else if (playCount % 2 != 0) {
                 gameboard.addMark(index, player2.mark);
                 domGameboard.updateDom(index, player2.mark);
                 winCheckAfterPlay();
@@ -237,7 +249,7 @@ const displayController = (function displayController() {
         console.log(`Game reset`)
     }
 
-    return { setPlayerNames, playGame, addPlayCount, getPlayCount, resetGame, winningBoardStatus, getGameStatus };
+    return { getPlayer1, getPlayer2, setPlayerNames, playGame, addPlayCount, getPlayCount, resetGame, winningBoardStatus, getGameStatus };
 })()
 
 domGameboard.clickDom();
