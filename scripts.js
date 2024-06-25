@@ -38,9 +38,10 @@ const domGameboard = (function DomGameboard() {
             const player1Name = document.querySelector("#player1").value;
             const player2Name = document.querySelector("#player2").value;
 
+            const gameAnnouncements = document.querySelector(".game-announcements");
+            gameAnnouncements.innerText = "";
+
             if (player1Name === "" || player2Name === "") {
-                const gameAnnouncements = document.querySelector(".game-announcements");
-                gameAnnouncements.innerText = "";
 
                 const nameRequirementPara = document.createElement("p");
                 nameRequirementPara.classList.add("name-required");
@@ -71,7 +72,7 @@ const domGameboard = (function DomGameboard() {
         playerAnnouncementPara.appendChild(playerInputs);
         gameAnnouncements.appendChild(playerAnnouncementPara);
         playerCountAnnouncement();
-        playerTurnAnnouncement();
+        playerTurnAnnouncement(name1, name2);
     }
 
     function playerCountAnnouncement() {
@@ -172,8 +173,6 @@ const displayController = (function displayController() {
         } else {
             gameActive = false;
         }
-        console.log(player1.name)
-        console.log(player2.name)
     }
 
     const getPlayer1 = () => player1;
@@ -250,11 +249,16 @@ const displayController = (function displayController() {
         return false;
     }
 
-    const resetGame = function() {
-        gameboard.resetBoard();
-        playCount = 0;
-        domGameboard.resetDom();
-        console.log(`Game reset`)
+    const resetGame = () => {
+        const resetButton = document.querySelector(".reset");
+
+        resetButton.addEventListener("click", function() {
+            gameboard.resetBoard();
+            playCount = 0;
+            gameActive = false;
+            domGameboard.resetDom();
+            console.log(`Game reset`)
+        })
     }
 
     return { getPlayer1, getPlayer2, setPlayerNames, playGame, addPlayCount, getPlayCount, resetGame, winningBoardStatus, getGameStatus };
@@ -262,6 +266,7 @@ const displayController = (function displayController() {
 
 domGameboard.clickDom();
 domGameboard.playerNameSubmissions();
+displayController.resetGame();
 
 
 /*
