@@ -27,6 +27,12 @@ const domGameboard = (function DomGameboard() {
 
     const resetDom = function() {
         cellList.forEach((cell) => cell.innerText = "");
+        const gameAnnouncements = document.querySelector(".game-announcements");
+        gameAnnouncements.innerText = "";
+        let player1Name = document.querySelector("#player1");
+        let player2Name = document.querySelector("#player2");
+        player1Name.value = "";
+        player2Name.value = "";
     }
 
     const playerNameSubmissions = function() {
